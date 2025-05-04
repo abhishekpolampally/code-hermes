@@ -1,84 +1,65 @@
-# Turborepo starter
+# 🧠 Code Hermes — AI-Powered Code Review Bot
 
-This Turborepo starter is maintained by the Turborepo core team.
+Code Hermes is an advanced microservice-based GitHub App that automates code reviews using OpenAI’s GPT models. It listens to PR events, processes the diff context, and generates actionable, line-level review comments — saving time, improving code quality, and ensuring consistent feedback at scale.
 
-## Using this example
+---
 
-Run the following command:
+## 📦 Tech Stack
 
-```sh
-npx create-turbo@latest
-```
+- **Backend Framework**: Node.js, TypeScript
+- **Monorepo**: Turborepo
+- **Microservices**:
+  - `webhook-service` – GitHub App event listener
+  - `review-coordinator` – PR metadata storage and queue management
+  - `review-engine` – AI-powered review generation using OpenAI
+- **Database**: PostgreSQL (via Prisma ORM)
+- **Queue**: Redis + BullMQ
+- **Auth**: GitHub App (installation tokens via Octokit)
+- **AI Integration**: OpenAI (GPT-4)
+- **Infra**: Docker, PNPM Workspaces
 
-## What's inside?
+---
 
-This Turborepo includes the following packages/apps:
+## ✅ Features Completed
 
-### Apps and Packages
+- [x] Listen to GitHub PR `opened` and `reopened` events
+- [x] Parse PR metadata and changed files
+- [x] Persist PRs and changes to PostgreSQL
+- [x] Queue-based worker system to process PRs asynchronously
+- [x] Generate structured review comments via OpenAI
+- [x] Return file-level, line-level feedback with suggested improvements
+- [x] Modularized Prisma client (`@code-hermes/db`) for reuse
+- [x] GitHub App authentication flow using Octokit with installation tokens
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+---
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+## 🚧 TODO – Next Milestones
 
-### Utilities
+- [ ] 🔄 Post review comments back to GitHub via `pulls.createReview`
+- [ ] 🧠 Improve prompt context by intelligently chunking large diffs
+- [ ] 🗃️ Store generated review comments in DB
+- [ ] ✅ Track resolved vs. unresolved review feedback
+- [ ] 🧪 Add e2e and unit testing for each service
+- [ ] 🕵️ Detect when new commits address previous feedback
+- [ ] 💬 Support for replying to developer comments (conversational PR threads)
+- [ ] 🧩 Integrate UI dashboard for PR analytics and feedback tracking
+- [ ] 🚀 Deploy to production (Render/Fly.io/AWS)
+- [ ] 🔐 Add role-based auth for human reviewers in future releases
 
-This Turborepo has some additional tools already setup for you:
+---
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+## 📄 License
 
-### Build
+MIT License. Feel free to fork and build on top of it.
 
-To build all apps and packages, run the following command:
+---
 
-```
-cd my-turborepo
-pnpm build
-```
+## 🙌 Contributing
 
-### Develop
+PRs are welcome! If you're interested in collaborating, open an issue or reach out.
 
-To develop all apps and packages, run the following command:
+---
 
-```
-cd my-turborepo
-pnpm dev
-```
+## 📬 Contact
 
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/docs/reference/command-line-reference)
+Maintainer: [@abhishekpolampally](https://github.com/abhishekpolampally)

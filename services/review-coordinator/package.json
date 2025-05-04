@@ -1,0 +1,29 @@
+{
+  "name": "review-coordinator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "node --loader ts-node/esm src/index.ts",
+    "dev": "node --loader ts-node/esm --no-warnings src/index.ts",
+    "start:worker": "node --loader ts-node/esm src/workers/prReviewWorker.ts",
+    "dev:worker": "node --loader ts-node/esm --no-warnings src/workers/prReviewWorker.ts",
+    "generate:db": "prisma generate --schema prisma/schema.prisma"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@code-hermes/db": "workspace:*",
+    "@code-hermes/shared": "workspace:*",
+    "@code-hermes/types": "workspace:*",
+    "axios": "^1.8.4",
+    "bullmq": "^5.51.0",
+    "express": "^5.1.0",
+    "ioredis": "^5.6.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.1"
+  }
+}

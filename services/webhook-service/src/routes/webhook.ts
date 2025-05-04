@@ -1,28 +1,52 @@
 // src/routes/webhook.ts
 import express from "express";
 import { verifyGithubSignature } from "../middleware/verifyHMAC.js";
+import { getAuthenticatedOctokit } from "@code-hermes/shared";
+import axios from "axios";
 
 const router = express.Router();
 
-router.post(
-  "/webhook",
-  verifyGithubSignature(process.env.WEBHOOK_SECRET ?? ""),
-  (req, res) => {
+router.post("/", verifyGithubSignature(), async (req, res) => {
+  try {
     const event = req.headers["x-github-event"];
-    const action = req.body.action;
+    const payload = req.body;
 
-    console.log(event, action);
+    if (event === "pull_request" && payload.action === "reopened") {
+      const installationId = payload.installation.id;
+      const { number: pull_number, head, base } = payload.pull_request;
+      const [owner, repo] = payload.repository.full_name.split("/");
 
-    if (event === "pull_requests" && action === "reopened") {
-      const pr = req.body.pull_request;
-      const repo = req.body.repository;
+      const octokit = await getAuthenticatedOctokit(installationId);
 
-      console.log(`🆕 New PR by ${pr.user.login} in ${repo.full_name}`);
-      console.log(`🔗 PR: ${pr.html_url}`);
+      // You now have full access to the repo via the GitHub App!
+      const files = await octokit.pulls.listFiles({
+        owner,
+        repo,
+        pull_number,
+      });
+
+      files.data.forEach((file) => {
+        if (file.patch) {
+          console.log("Patch for file:", file.filename);
+          console.log(file.patch); // This is the unified diff of the changes
+        }
+      });
+
+      await axios.post(`${process.env.REVIEW_COORDINATOR_URL}/review`, {
+        prNumber: pull_number,
+        repo,
+        owner,
+        files,
+        installationId,
+      });
+
+      res.status(200).send("Webhook processed successfully");
+    } else {
+      res.status(200).send("Event ignored");
     }
-
-    res.status(200).send("Event received");
+  } catch (error) {
+    console.log(error);
   }
-);
+});
 
 export default router;

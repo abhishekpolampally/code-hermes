@@ -1,5 +1,7 @@
 import express, { Request, Response } from "express";
 import webhookRouter from "./routes/webhook.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 app.use(express.json({ verify: rawBodySaver }));
@@ -7,8 +9,8 @@ app.use(express.json({ verify: rawBodySaver }));
 // Routes
 app.use("/webhook", webhookRouter);
 
-app.listen(3001, () => {
-  console.log("🚀 Webhook service running on port 3001");
+app.listen(process.env.PORT, () => {
+  console.log(`🚀 Webhook service running on port ${process.env.PORT}`);
 });
 
 // Needed to verify HMAC

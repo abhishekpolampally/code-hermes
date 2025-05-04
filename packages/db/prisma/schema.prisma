@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model PullRequest {
+  prNumber  Int  @id
+  repo      String
+  owner     String
+  files     Json
+  createdAt DateTime @default(now())
+
+  reviewComments ReviewComment[]
+
+  @@unique([prNumber, repo, owner])
+}
+
+model ReviewComment {
+  id          String   @id @default(cuid())
+  prNumber    Int
+  repo        String
+  owner       String
+  filePath    String
+  lineNumber  Int
+  comment     String
+  resolved    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  pullRequest PullRequest @relation(fields: [prNumber], references: [prNumber], onDelete: Cascade)
+
+  @@unique([prNumber, repo, owner, filePath, lineNumber, comment])
+}
+
+model RepositoryInstallation {
+  id             Int      @id @default(autoincrement())
+  repo           String
+  owner          String
+  installationId Int
+
+  @@unique([repo, owner])
+}
